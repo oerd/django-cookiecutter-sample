@@ -117,7 +117,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: coverage-${{ github.sha }}.xml
-          path: coverage.xml
+          # path: coverage.xml
       - name: Echo download path
         run: echo ${{ steps.py-coverage-download.outputs.download-path }}
       - name: (Debug) Show structure of files
