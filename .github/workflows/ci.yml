@@ -82,3 +82,31 @@ jobs:
 
       - name: Test with pytest
         run:  pytest
+
+      - name: (Debug) Show structure of files
+        run: ls -R
+
+      - name: Upload python coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-${{ github.sha }}.xml
+          path: coverage.xml
+  
+  # Analyze data on sonarcloud.io
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Download python coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-${{ github.sha }}.xml
+          path: coverage.xml
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
