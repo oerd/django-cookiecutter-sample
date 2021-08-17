@@ -102,6 +102,7 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
+    if: always()
     needs: [
       linter,
       pytest
