@@ -96,6 +96,10 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
+    needs: [
+      linter,
+      pytest
+    ]
     steps:
       - uses: actions/checkout@v2
         with:
