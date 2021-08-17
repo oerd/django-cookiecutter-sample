@@ -80,8 +80,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements/local.txt
 
-      - name: Test with pytest
-        run:  django coverage run -m pytest
+      - name: Run tests with coverage
+        run:  coverage run manage.py test
+      
+      - name: Run coverage report
+        run:  coverage report
+      
+      - name: Generate coverage xml
+        run:  coverage xml -i
 
       - name: (Debug) Show structure of files
         run: ls -R
