@@ -113,10 +113,15 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Download python coverage report
+        id: py-coverage-download
         uses: actions/download-artifact@v2
         with:
           name: coverage-${{ github.sha }}.xml
           path: coverage.xml
+      - name: Echo download path
+        run: echo ${{ steps.py-coverage-download.outputs.download-path }}
+      - name: (Debug) Show structure of files
+        run: ls -R
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
