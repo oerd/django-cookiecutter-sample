@@ -97,6 +97,7 @@ jobs:
         with:
           name: coverage-${{ github.sha }}.xml
           path: coverage.xml
+          retention-days: 1
   
   # Analyze data on sonarcloud.io
   sonarcloud:
