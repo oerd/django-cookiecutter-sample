@@ -95,10 +95,38 @@ jobs:
       - name: Upload python coverage report
         uses: actions/upload-artifact@v2
         with:
-          name: coverage-${{ github.sha }}.xml
+          name: py-coverage-${{ github.sha }}
           path: coverage.xml
           retention-days: 1
   
+  # Run nodejs tests
+  nodetest:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
+    defaults:
+      run:
+        working-directory: nextjs_frontend
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Install node deps
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:ci
+
+      - name: Upload nextjs coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: js-coverage-${{ github.sha }}
+          path: nextjs_frontend/coverage
+      
+
   # Analyze data on sonarcloud.io
   sonarcloud:
     name: SonarCloud
@@ -109,19 +137,35 @@ jobs:
       pytest
     ]
     steps:
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
       - name: Download python coverage report
         id: py-coverage-download
         uses: actions/download-artifact@v2
         with:
-          name: coverage-${{ github.sha }}.xml
+          name: py-coverage-${{ github.sha }}
           # path: coverage.xml
-      - name: Echo download path
-        run: echo ${{ steps.py-coverage-download.outputs.download-path }}
+      
+      - name: Download nodejs coverage report
+        id: js-coverage-download
+        uses: actions/download-artifact@v2
+        with:
+          name: js-coverage-${{ github.sha }}
+          path: nextjs_frontend/coverage
+
+      - name: LS download path
+        run: |
+          echo ${{ steps.py-coverage-download.outputs.download-path }}
+          ls -lah ${{ steps.py-coverage-download.outputs.download-path }}
+          echo ${{ steps.js-coverage-download.outputs.download-path }}
+          ls -lah ${{ steps.js-coverage-download.outputs.download-path }}
+
       - name: (Debug) Show structure of files
         run: ls -R
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
