@@ -146,14 +146,14 @@ jobs:
 
       - name: Download python coverage report
         id: py-coverage-download
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: py-coverage-${{ github.sha }}
           # path: coverage.xml
       
       - name: Download nodejs coverage report
         id: js-coverage-download
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: js-coverage-${{ github.sha }}
           path: nextjs_frontend/coverage
